@@ -1,25 +1,165 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp11", "ConsoleApp11\ConsoleApp11.csproj", "{4DD64ABC-E9C3-4E04-84F6-248B1922BECC}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4DD64ABC-E9C3-4E04-84F6-248B1922BECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DD64ABC-E9C3-4E04-84F6-248B1922BECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DD64ABC-E9C3-4E04-84F6-248B1922BECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DD64ABC-E9C3-4E04-84F6-248B1922BECC}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A421EFFC-2042-4BE4-80FA-7742EF40D60C}
-	EndGlobalSection
-EndGlobal
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+
+namespace ConsoleApp11
+
+{
+   
+    public enum RelationshipType
+    {
+        Sister,
+        Brother,
+        Mother,
+        Father
+    }
+
+    public class Person
+    {
+        
+        public int PersonId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string FavoriteColour { get; set; }
+        public int Age { get; set; }
+        public bool IsWorking { get; set; }
+
+       
+        public void DisplayPersonInfo()
+        {
+            Console.WriteLine($"{PersonId}: {FirstName} {LastName}'s favorite color is {FavoriteColour}");
+        }
+
+        
+        public void ChangeFavoriteColour()
+        {
+            FavoriteColour = "White";
+        }
+
+        
+        public int GetAgeInTenYears()
+        {
+            return Age + 10;
+        }
+
+        
+        public override string ToString()
+        {
+            return $"PersonId: {PersonId}\n" +
+                   $"FirstName: {FirstName}\n" +
+                   $"LastName: {LastName}\n" +
+                   $"FavoriteColour: {FavoriteColour}\n" +
+                   $"Age: {Age}\n" +
+                   $"IsWorking: {IsWorking}";
+        }
+    }
+
+    public class Relation
+    {
+        
+        public RelationshipType Type { get; set; }
+
+        
+        public void ShowRelationShip(Person person1, Person person2)
+        {
+            string relationshipName = Type.ToString() + "hood";
+            Console.WriteLine($"Relationship between {person1.FirstName} and {person2.FirstName} is: {relationshipName}");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+           
+            Person ian = new Person
+            {
+                PersonId = 1,
+                FirstName = "Ian",
+                LastName = "Brooks",
+                FavoriteColour = "Red",
+                Age = 30,
+                IsWorking = true
+            };
+
+            Person gina = new Person
+            {
+                PersonId = 2,
+                FirstName = "Gina",
+                LastName = "James",
+                FavoriteColour = "Green",
+                Age = 18,
+                IsWorking = false
+            };
+
+            Person mike = new Person
+            {
+                PersonId = 3,
+                FirstName = "Mike",
+                LastName = "Briscoe",
+                FavoriteColour = "Blue",
+                Age = 45,
+                IsWorking = true
+            };
+
+            Person mary = new Person
+            {
+                PersonId = 4,
+                FirstName = "Mary",
+                LastName = "Beals",
+                FavoriteColour = "Yellow",
+                Age = 28,
+                IsWorking = true
+            };
+
+            
+            gina.DisplayPersonInfo();
+
+            
+            Console.WriteLine(mike.ToString());
+
+          
+            ian.ChangeFavoriteColour();
+            ian.DisplayPersonInfo();
+
+            
+            Console.WriteLine($"{mary.FirstName} {mary.LastName}'s Age in 10 years is: {mary.GetAgeInTenYears()}");
+
+            
+            Relation ginaMaryRelation = new Relation { Type = RelationshipType.Sister };
+            Relation ianMikeRelation = new Relation { Type = RelationshipType.Brother };
+
+            ginaMaryRelation.ShowRelationShip(gina, mary);
+            ianMikeRelation.ShowRelationShip(ian, mike);
+
+            
+            List<Person> people = new List<Person> { ian, gina, mike, mary };
+
+            
+            double averageAge = people.Average(p => p.Age);
+            Console.WriteLine($"Average age is: {averageAge:F2}");
+
+            
+            Person youngest = people.OrderBy(p => p.Age).First();
+            Person oldest = people.OrderBy(p => p.Age).Last();
+            Console.WriteLine($"The youngest person is: {youngest.FirstName}");
+            Console.WriteLine($"The oldest person is: {oldest.FirstName}");
+
+            
+            Console.WriteLine("People whose first names start with M:");
+            var mNames = people.Where(p => p.FirstName.StartsWith("M", StringComparison.OrdinalIgnoreCase));
+            foreach (var person in mNames)
+            {
+                Console.WriteLine(person.ToString());
+            }
+
+            
+            Console.WriteLine("Person information of the person that likes the colour blue:");
+            var blueLover = people.FirstOrDefault(p =>
+                p.FavoriteColour.Equals("Blue", StringComparison.OrdinalIgnoreCase));
+            Console.WriteLine(blueLover?.ToString() ?? "No person likes blue");
+        }
+    }
+}
